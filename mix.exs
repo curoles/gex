@@ -22,8 +22,9 @@ defmodule Gex.MixProject do
   #
   # Run "mix help deps" for examples and options.
   defp deps do
-    [{:earmark, "~> 1.2",  only: :dev},
-     {:ex_doc,  "~> 0.19", only: :dev}
+    [{:earmark,   "~> 1.2",  only: :dev},
+     {:ex_doc,    "~> 0.19", only: :dev},
+     {:httpoison, "~> 1.6"}
     ]
   end
 end

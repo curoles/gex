@@ -1,3 +1,11 @@
+## Dec 20, `mix compile` also executes `ping_alphavantage`
+
+[Elixir always compiles and always executes source code.](https://medium.com/@fxn/how-does-elixir-compile-execute-code-c1b36c9ec8cf)
+
+## Dec 20, Install ElixirLS extention for VS Code
+
+- Automatic, incremental Dialyzer analysis (requires Erlang OTP 20)
+- Automatic suggestion for @spec annotations based on Dialyzer's inferred success typings
 
 ## Dec 20 2019, Set up ExDoc
 
