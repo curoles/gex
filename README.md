@@ -1,2 +1,1 @@
-# gex
-green exchange
+# Gex - green exchange
