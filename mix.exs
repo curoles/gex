@@ -7,7 +7,12 @@ defmodule Gex.MixProject do
       version: "0.1.0",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      build_path: "../_build"
+      build_path: "../_build",
+
+      # Docs
+      docs: [
+        output: "../doc"
+      ]
     ]
   end
 
@@ -17,6 +22,8 @@ defmodule Gex.MixProject do
   #
   # Run "mix help deps" for examples and options.
   defp deps do
-    []
+    [{:earmark, "~> 1.2",  only: :dev},
+     {:ex_doc,  "~> 0.19", only: :dev}
+    ]
   end
 end
