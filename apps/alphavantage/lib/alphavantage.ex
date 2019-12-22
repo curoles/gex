@@ -43,6 +43,15 @@ defmodule Alphavantage do
     query(query)
   end
 
+  @spec intraday(String.t(), integer, String.t()) :: {:error, any} | {:ok, String.t()}
+  def intraday(symbol, interval, apikey) do
+    normalized_interval = Enum.min_by([1,5,15,30,60], &abs(&1 - interval))
+    query = %{"function" => "TIME_SERIES_INTRADAY",
+      "interval" => Integer.to_string(normalized_interval) <> "min",
+      "symbol" => symbol, "apikey" => apikey}
+    query(query)
+  end
+
   @spec get_env_apikey :: String.t()
   def get_env_apikey do
     System.get_env("ALPHA_VANTAGE_ACESS_KEY", "demo")

@@ -71,9 +71,17 @@ defmodule Alphavantage.CLI do
         IO.puts endpoint
     end
 
-    #query = %{
-    #  "function" => "TIME_SERIES_INTRADAY", "symbol" => symbol_name,
-    #  "interval" => "60min", "apikey" => apikey}
+    intraday_result = Alphavantage.intraday(symbol_name, 60, apikey)
+    case intraday_result do
+      {:ok, json_intraday} ->
+        {_status, intraday} = JSON.decode(json_intraday)
+        _time_series = intraday["Time Series (60min)"]
+        |> Enum.take(24)
+        |> Enum.each(fn ts ->
+          {_time, data} = ts
+          IO.puts data["4. close"]
+        end)
+    end
 
   end
 
