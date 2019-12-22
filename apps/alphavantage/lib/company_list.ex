@@ -37,6 +37,18 @@ defmodule CompanyList do
     end
   end
 
+  @doc """
+  Find stock exchange symbol and return its description.
+
+  ## Examples
+
+      iex> CompanyList.find_symbol("IBM", "nasdaq")
+      [
+        ok: ["IBM", "International Business Machines Corporation", "135.59",
+             "$120.08B", "n/a", "Technology", "Computer Manufacturing",
+             "https://old.nasdaq.com/symbol/ibm"]
+      ]
+  """
   @spec find_symbol(String.t(), String.t()) :: {:ok|:error, [String.t()]}
   def find_symbol(symbol_name, exchange \\ "") do
     symbols = all(String.first(symbol_name), exchange)
