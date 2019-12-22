@@ -1,9 +1,9 @@
-defmodule PingAlphavantage.MixProject do
+defmodule Alphavantage.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :ping_alphavantage,
+      app: :alphavantage,
       version: "0.1.0",
       escript: escript(),
       build_path: "../../../_build",
@@ -25,8 +25,8 @@ defmodule PingAlphavantage.MixProject do
 
   # https://hexdocs.pm/mix/master/Mix.Tasks.Escript.Build.html
   defp escript do
-    [ main_module: PingAlphavantage.CLI,
-      path: "../../../_build/ping_alphavantage"
+    [ main_module: Alphavantage.CLI,
+      path: "../../../_build/alphavantage"
     ]
   end
 

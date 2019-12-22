@@ -1,45 +1,48 @@
-defmodule PingAlphavantage.CLI do
+defmodule Alphavantage.CLI do
 
   def main(args \\ []) do
     args
     |> show_banner
-    #|> parse_args
-    #|> process
-    do_http_request()
+    |> parse_args
+    |> process
     IO.puts "Done."
   end
 
   defp show_banner(args) do
-    IO.puts "Ping https://www.alphavantage.co"
+    IO.puts "Test API https://www.alphavantage.co"
     args
   end
 
-  #defp parse_args(args) do
-  #  {switches, filelist, _} = OptionParser.parse(args, switches: [dest: :string])
-  #  {switches, filelist}
-  #end
+  # https://hexdocs.pm/elixir/OptionParser.html
+  #
+  defp parse_args(args) do
+    # Options are defined with Keyword list:
+    # [switches: keyword(), strict: keyword(), aliases: keyword()]
+    options = [strict: []]
+    {switches, cmds, _} = OptionParser.parse(args, options)
+    # OptionParser returned tuple:
+    # {list of parsed switches, list of the remaining arguments, list of invalid options}
+    {cmds, switches}
+  end
 
-  #defp process({[],[]}) do
-  #  IO.puts "No arguments given"
-  #end
+  defp process({[],[]}) do
+    IO.puts "No arguments given. Usage:"
+    IO.puts "1. alphavantage get"
+  end
 
   #defp process({_,[]}) do
   #  IO.puts "No location of input directory given"
   #end
 
-  #defp process({switches, filelist}) do
-  #  [source | _] = filelist
-  #  dest = switches[:dest]
-  #  IO.puts "Source: '#{source}', destination: '#{dest}'"
-  #  tasks = WalkDirectory.recursive(&Generator.visit_file/3, dest, source)
-  #  Enum.each(tasks, fn _task ->
-  #    receive do
-  #      {:done, _ref} ->
-  #        #IO.puts "Task finished"
-  #        :ok
-  #    end
-  #  end)
-  #end
+  defp process({cmds, _switches}) do
+    [cmd | _] = cmds
+    case cmd do
+      "get" ->
+        do_http_request()
+      _ ->
+        IO.puts "unknown command " <> cmd
+    end
+  end
 
   # https://github.com/edgurgel/httpoison
   defp do_http_request() do
@@ -67,4 +70,4 @@ defmodule PingAlphavantage.CLI do
 
 end
 
-PingAlphavantage.CLI.main(System.argv)
+Alphavantage.CLI.main(System.argv)
