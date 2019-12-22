@@ -5,7 +5,6 @@ defmodule Alphavantage.CLI do
     |> show_banner
     |> parse_args
     |> process
-    #IO.puts "Done."
   end
 
   defp show_banner(args) do
@@ -29,14 +28,11 @@ defmodule Alphavantage.CLI do
 
   defp process({[],[]}) do
     IO.puts "No arguments given. Usage:"
-    IO.puts "  alphavantage get --symbol SYM --apikey KEY [--interval 1|5|15|30|60]"
-    IO.puts "  alphavantage list [--letter <L>]"
-    IO.puts "  alphavantage find SYM"
+    IO.puts "  gex get --symbol SYM --apikey KEY [--interval 1|5|15|30|60]"
+    IO.puts "  gex list [--letter <L>]"
+    IO.puts "  gex find SYM"
+    IO.puts "  gex search KEYWORD --apikey KEY"
   end
-
-  #defp process({_,[]}) do
-  #  IO.puts "No location of input directory given"
-  #end
 
   defp process({cmds, switches}) do
     [cmd | _] = cmds
@@ -51,38 +47,34 @@ defmodule Alphavantage.CLI do
         else
           IO.puts "provide symbol name"
         end
+      "search" ->
+        if Enum.count(cmds) > 1 do
+          search_keyword(Enum.at(cmds,1), switches)
+        else
+          IO.puts "provide keyword"
+        end
       _ ->
         IO.puts "unknown command " <> cmd
     end
   end
 
-  # https://github.com/edgurgel/httpoison
   defp request_info(switches) do
 
-    apikey = switches[:apikey]
-
+    apikey = switches[:apikey] || Alphavantage.get_env_apikey()
     symbol_name = switches[:symbol]
+
     find_symbol(symbol_name)
 
-    # The dependent applications are not started automatically at compile time.
-    # You need to explicitly start HTTPoison before using it.
-    HTTPoison.start()
-
-    # https://hexdocs.pm/elixir/URI.html#encode_query/1
-    query = %{
-      "function" => "TIME_SERIES_INTRADAY", "symbol" => symbol_name,
-      "interval" => "60min", "apikey" => apikey}
-    url = "https://www.alphavantage.co/query?" <> URI.encode_query(query)
-    IO.puts url
-
-    case HTTPoison.get(url) do
-      {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
-        IO.puts body
-      {:ok, %HTTPoison.Response{status_code: 404}} ->
-        IO.puts "Not found :("
-      {:error, %HTTPoison.Error{reason: reason}} ->
-        IO.inspect reason
+    endpoint_result = Alphavantage.endpoint(symbol_name, apikey)
+    case endpoint_result do
+      {:ok, endpoint} ->
+        IO.puts endpoint
     end
+
+    #query = %{
+    #  "function" => "TIME_SERIES_INTRADAY", "symbol" => symbol_name,
+    #  "interval" => "60min", "apikey" => apikey}
+
   end
 
   defp show_symbols(switches) do
@@ -106,9 +98,21 @@ defmodule Alphavantage.CLI do
         IO.puts "Sector:     #{Enum.at(description,5)}, #{Enum.at(description,6)}"
       [error: _] ->
         IO.puts "can't find symbol"
+      [] ->
+        IO.puts "can't find symbol"
     end
   end
 
+  defp search_keyword(keyword, switches) do
+    apikey = switches[:apikey] || Alphavantage.get_env_apikey()
+    result = Alphavantage.search(keyword, apikey)
+    case result do
+      {:ok, body} ->
+        IO.puts body
+      {:error, _} ->
+        IO.puts "found nothing"
+    end
+  end
 end
 
 Alphavantage.CLI.main(System.argv)

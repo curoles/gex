@@ -26,7 +26,7 @@ defmodule Alphavantage.MixProject do
   # https://hexdocs.pm/mix/master/Mix.Tasks.Escript.Build.html
   defp escript do
     [ main_module: Alphavantage.CLI,
-      path: "../../../_build/alphavantage"
+      path: "../../../_build/gex"
     ]
   end
 

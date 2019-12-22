@@ -51,7 +51,7 @@ defmodule CompanyList do
   """
   @spec find_symbol(String.t(), String.t()) :: {:ok|:error, [String.t()]}
   def find_symbol(symbol_name, exchange \\ "") do
-    symbols = all(String.first(symbol_name), exchange)
+    symbols = all("", exchange)
     case symbols do
       {:error, _} ->
         {:error, []}
