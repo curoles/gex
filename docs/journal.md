@@ -1,6 +1,17 @@
+## Dec 21, Lock dependency versions
+
+[Best practices for deploying Elixir apps](
+https://www.cogini.com/blog/best-practices-for-deploying-elixir-apps/)
+
+Mix records the specific versions that it fetched in the `mix.lock` file.
+Check the `mix.lock` file into source control.
+Later, on the build machine, mix will use the specific package version,
+the same as during development and testing.
+
 ## Dec 20, `mix compile` also executes `ping_alphavantage`
 
-[Elixir always compiles and always executes source code.](https://medium.com/@fxn/how-does-elixir-compile-execute-code-c1b36c9ec8cf)
+[Elixir always compiles and always executes source code.](
+https://medium.com/@fxn/how-does-elixir-compile-execute-code-c1b36c9ec8cf)
 
 ## Dec 20, Install ElixirLS extention for VS Code
 
