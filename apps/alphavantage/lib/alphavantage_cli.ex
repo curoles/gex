@@ -18,7 +18,7 @@ defmodule Alphavantage.CLI do
   defp parse_args(args) do
     # Options are defined with Keyword list:
     # [switches: keyword(), strict: keyword(), aliases: keyword()]
-    options = [strict: []]
+    options = [strict: [letter: :string]]
     {switches, cmds, _} = OptionParser.parse(args, options)
     # OptionParser returned tuple:
     # {list of parsed switches, list of the remaining arguments, list of invalid options}
@@ -27,18 +27,21 @@ defmodule Alphavantage.CLI do
 
   defp process({[],[]}) do
     IO.puts "No arguments given. Usage:"
-    IO.puts "1. alphavantage get"
+    IO.puts "alphavantage get"
+    IO.puts "alphavantage list --letter"
   end
 
   #defp process({_,[]}) do
   #  IO.puts "No location of input directory given"
   #end
 
-  defp process({cmds, _switches}) do
+  defp process({cmds, switches}) do
     [cmd | _] = cmds
     case cmd do
       "get" ->
         do_http_request()
+      "list" ->
+        show_symbols(switches)
       _ ->
         IO.puts "unknown command " <> cmd
     end
@@ -53,7 +56,7 @@ defmodule Alphavantage.CLI do
 
     # https://hexdocs.pm/elixir/URI.html#encode_query/1
     query = %{
-      "function" => "TIME_SERIES_INTRADAY", "symbol" => "MSFT",
+      "function" => "TIME_SERIES_INTRADAY", "symbol" => "IBM",
       "interval" => "5min", "apikey" => "demo"}
     url = "https://www.alphavantage.co/query?" <> URI.encode_query(query)
     IO.puts url
@@ -66,6 +69,10 @@ defmodule Alphavantage.CLI do
       {:error, %HTTPoison.Error{reason: reason}} ->
         IO.inspect reason
     end
+  end
+
+  defp show_symbols(switches) do
+    CompanyList.all(switches[:letter])
   end
 
 end
