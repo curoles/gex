@@ -12,6 +12,12 @@ defmodule Gex.MixProject do
       # Docs
       docs: [
         output: "../doc"
+      ],
+
+      releases: [
+        prod: [
+          include_executables_for: [:unix],
+        ]
       ]
     ]
   end
