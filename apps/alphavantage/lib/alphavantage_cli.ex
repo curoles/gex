@@ -18,7 +18,8 @@ defmodule Alphavantage.CLI do
     # Options are defined with Keyword list:
     # [switches: keyword(), strict: keyword(), aliases: keyword()]
     options = [
-      strict: [letter: :string, symbol: :string, apikey: :string, interval: :integer]
+      strict: [letter: :string, symbol: :string, apikey: :string,
+        interval: :integer, maxsize: :integer]
     ]
     {switches, cmds, _} = OptionParser.parse(args, options)
     # OptionParser returned tuple:
@@ -28,8 +29,8 @@ defmodule Alphavantage.CLI do
 
   defp process({[],[]}) do
     IO.puts "No arguments given. Usage:"
-    IO.puts "  gex get --symbol SYM --apikey KEY [--interval 1|5|15|30|60]"
-    IO.puts "  gex list [--letter <L>]"
+    IO.puts "  gex get --symbol SYM --apikey KEY"
+    IO.puts "  gex list [--letter <L>] [--maxsize MAX]"
     IO.puts "  gex find SYM"
     IO.puts "  gex search KEYWORD --apikey KEY"
   end
@@ -86,13 +87,18 @@ defmodule Alphavantage.CLI do
   end
 
   defp show_symbols(switches) do
-    result = CompanyList.all(switches[:letter])
-    case result do
-      {:ok, symbols} ->
-        IO.puts symbols
-      {:error, _} ->
-        IO.puts "failed to get data"
-    end
+    maxsize = switches[:maxsize] || 10000
+    rows = CompanyList.top(maxsize, switches[:letter])
+    rows
+    |> Enum.each(fn row ->
+      case row do
+       {:ok, sym} ->
+        IO.puts "#{String.pad_trailing(sym["Symbol"],5)}  " <>
+          "#{String.pad_trailing(sym["Name"],32)}  #{String.pad_leading(sym["LastSale"],8)}  " <>
+          "#{String.pad_leading(sym["MarketCap"],9)}  " <>
+          "#{sym["Sector"]}, #{sym["industry"]}"
+      end
+    end)
   end
 
   defp find_symbol(symbol_name) do

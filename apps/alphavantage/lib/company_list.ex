@@ -17,7 +17,8 @@ defmodule CompanyList do
   def all(letter \\ "", exchange \\ "") do
     HTTPoison.start()
 
-    query = %{"exchange" => exchange, "render" => "download", "letter" => letter}
+    query = %{"exchange" => exchange, "render" => "download", "letter" => letter,
+      "sortname" => "marketcap", "sorttype" => 1}
     url = "https://old.nasdaq.com/screening/companies-by-name.aspx?" <> URI.encode_query(query)
 
     options = [recv_timeout: 10000]
@@ -65,4 +66,17 @@ defmodule CompanyList do
     end
   end
 
+
+  def top(maxsize \\ 1000, letter \\ "", exchange \\ "") do
+    result = all(letter, exchange)
+    case result do
+      {:ok, symbols} ->
+        symbols
+        |> String.split(~r/(\r?\n|\r)/, trim: true)
+        |> CSV.decode(headers: :true)
+        |> Enum.take(maxsize)
+      {:error, _} ->
+        {:error, []}
+    end
+  end
 end
