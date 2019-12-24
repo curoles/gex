@@ -1,3 +1,39 @@
+## Dec 22, NumPy Array
+
+- Did they take idea from [this](https://www.researchgate.net/publication/221211398_High-performance_technical_computing_with_erlang) Erlang design?
+- https://www.scipy.org/scipylib/faq.html#id4
+- https://sourceforge.net/projects/numpy/files/Old%20Numarray/
+- https://sourceforge.net/projects/numpy/files/Old%20Numarray/
+
+## Dec 22, what data can be found in Internet?
+
+- https://medium.com/@pewresearch/using-google-trends-data-for-research-here-are-6-questions-to-ask-a7097f5fb526
+- https://www.weatherbit.io/api
+- https://github.com/public-apis/public-apis#news
+- https://github.com/public-apis/public-apis#weather
+- https://github.com/public-apis/public-apis#jobs
+- https://github.com/public-apis/public-apis#government
+- https://github.com/public-apis/public-apis#environment
+
+## Dec 22, NIF
+
+- http://erlang.org/doc/man/erl_nif.html
+- https://cs.mcgill.ca/~mxia3/2017/06/18/tutorial-extending-elixir-with-c-using-NIF/
+- https://github.com/jeffkreeftmeijer/elixir-nif-examples/tree/master/c_src
+
+## Dec 22, Rust NIF, but I still prefer C
+
+- https://github.com/rusterlium/rustler
+- https://blog.discordapp.com/using-rust-to-scale-elixir-for-11-million-concurrent-users-c6f19fc029d3
+- https://medium.com/@jacob.lerche/writing-rust-nifs-for-your-elixir-code-with-the-rustler-package-d884a7c0dbe3 
+
+## Dec 22, reference LAPACK
+
+- https://github.com/Reference-LAPACK/lapack
+- according to [wiki](https://en.wikipedia.org/wiki/NumPy) : both MATLAB and NumPy
+  rely on BLAS and LAPACK for efficient linear algebra computations.
+- https://markus-beuckelmann.de/blog/boosting-numpy-blas.html
+
 ## Dec 21, Lock dependency versions
 
 [Best practices for deploying Elixir apps](
