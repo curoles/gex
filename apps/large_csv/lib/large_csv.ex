@@ -1,7 +1,8 @@
 defmodule LargeCSV do
-  @moduledoc author: "Igor Lesik 2019"
   @moduledoc """
   Process large CSV files and strings with Stream.
+
+  Author: Igor Lesik 2019
 
   References:
 

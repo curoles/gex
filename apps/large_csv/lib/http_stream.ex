@@ -2,7 +2,34 @@ defmodule HTTPStream do
   @moduledoc """
   Get HTTP response as Stream.
 
+  Author: Igor Lesik 2019
+
   Based on https://www.poeticoding.com/elixir-stream-and-large-http-responses-processing-text/
+
+  ## Examples
+
+      iex> url = "https://old.nasdaq.com/screening/companies-by-name.aspx?render=download" \\
+      ...> |> HTTPStream.get \\
+      ...> |> HTTPStream.lines \\
+      ...> |> Enum.count
+      STATUS: : 200
+      HEADERS: : [
+        {"Cache-Control", "private"},
+        {"Content-Type", "application/text"},
+        {"content-disposition", "attachment; filename=companylist.csv"},
+        {"X-Frame-Options", "SAMEORIGIN"},
+        {"X-Content-Type-Options", "nosniff"},
+        {"X-XSS-Protection", "1;mode=block"},
+        {"Date", "Tue, 24 Dec 2019 02:32:31 GMT"},
+        {"Transfer-Encoding", "chunked"},
+        {"Connection", "keep-alive"},
+        {"Connection", "Transfer-Encoding"},
+        {"Set-Cookie",
+        "NSC_W.TJUFEFGFOEFS.OBTEBR.443=ffffffffc3a08e3145525d5f4f58455e445a4a42378b;expires=Wed, 25-Dec-2019 02:32:31 GMT;path=/;secure;httponly"},
+        {"Access-Control-Allow-Origin", "https://www.nasdaq.com"}
+      ]
+      END
+      6997
   """
 
   @debug_enabled true
@@ -12,8 +39,9 @@ defmodule HTTPStream do
 
   ## Example
 
-      iex> (url = "https://old.nasdaq.com/screening/companies-by-name.aspx?render=download"
-         > |> HTTPStream.get |> Stream.run)
+      iex> url = "https://old.nasdaq.com/screening/companies-by-name.aspx?render=download" \\
+         > |> HTTPStream.get \\
+         > |> Stream.run
       STATUS: : 200
       HEADERS: : [
         {"Cache-Control", "private"},
@@ -103,5 +131,50 @@ defmodule HTTPStream do
   end
 
 
+  @doc """
+  Transform stream of string chunks into stream of lines,
+  where a line is a string ending with `\\n`.
+
+  The idea: We split the chunk into lines and the last element of the list
+  becomes the accumulator, which is concatenated to the next chunk.
+
+  Return a tuple containing a new stream with the new accumulator
+  or a tuple with :halt as first element and the accumulator as second.
+
+  ## Examples
+
+      iex> ["767\\n13","8\\n-701\\n98\\n-","504\\n22😋", :end] \\
+      ...> |> HTTPStream.lines() \\
+      ...> |> Enum.each(&IO.inspect/1)
+      "767"
+      "138"
+      "-701"
+      "98"
+      "-504"
+      "22😋"
+      :ok
+
+      iex> ["767\\n13","8\\n-701\\n98\\n-","504\\n22", :end] \\
+      ...> |> HTTPStream.lines() \\
+      ...> |> Enum.count()
+      6
+  """
+  @spec lines(Enumerable.t()) :: (any, any -> any)
+  def lines(enum) do
+    enum
+    |> Stream.transform("", fn
+      # got EndOfStream marker
+      :end, acc ->
+        {[acc], # last part of data
+         ""     # empty accum
+        }
+      # got new chunk and accumulator with tail from prev chunk
+      chunk, acc ->
+        lines = String.split(acc <> chunk, "\n")
+        {Enum.drop(lines, -1), # drop the tail, return list of lines
+         List.last(lines)      # tail, new accumulator
+        }
+    end)
+  end
 
 end
